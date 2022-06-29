@@ -1,18 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
-<body>
-
+  <head>
+    <style></style>
+  </head>
+  <body>
     <div id="speechtotext">
-        <h4>Speech To Text </h4>
-        <button  type="button" style="top: 80px;">Press to capture speech <i class="fa-solid fa-microphone"></i></button>
-        <textarea name="" id="" cols="120" rows="5"></textarea>
+      <h4>Speech To Text</h4>
+      <hr />
+      <button id="startRecording" type="button">
+        Press to capture speech <i class="fa-solid fa-microphone"></i>
+      </button>
+      <button id="stoptRecording" type="button">
+        Stop <i class="fa-solid fa-microphone"></i>
+      </button>
+      <br />
+
+      <div style="margin: 8px">
+        <label for="audioFileChooser">Upload an audio file: </label><br /><br />
+        <input id="audioFileChooser" type="file" onchange="speechConvert1()" />
+      </div>
+
+      <textarea
+        name=""
+        id=""
+        cols="80"
+        rows="5"
+        style="margin-top: 5px"
+      ></textarea>
+      <audio id="audioPlay" controls>aaa</audio>
     </div>
 
-    <div id="texttospeech">
-        <h4>Text To Speech</h4>
-        <textarea name="" id="" cols="120" rows="5"></textarea>
-        <button type="button" style="top: 190px;">Press to get speech <i class="fa-solid fa-volume-high"></i></button>
-    </div>
-   
-</body>
+    <script>
+      async function speechConvert(file) {
+        //     console.log(file);
+        //    let url = "https://api.assemblyai.com/v2/transcript";
+        //       // Default options are marked with *
+        //       const response = await fetch(url, {
+        //         method: "POST", // *GET, POST, PUT, DELETE, etc.
+        //         mode: "cors", // no-cors, *cors, same-origin
+        //         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        //         credentials: "same-origin", // include, *same-origin, omit
+        //         headers: {
+        //             authorization:"bf1c521c6e2049809ce587e0f0ca249f",
+        //         //    "Content-Type": "multipart/form-data",
+        //            "Content-Type": "application/json",
+        //           // 'Content-Type': 'application/x-www-form-urlencoded',
+        //         },
+        //         redirect: "follow", // manual, *follow, error
+        //         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //         body:  { audio_url: "https://bit.ly/3yxKEIY" }, // body data type must match "Content-Type" header
+        //       });
+        //       return response; // parses JSON response into native JavaScript objects
+      }
+
+      function speechConvert1() {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "bf1c521c6e2049809ce587e0f0ca249f");
+        myHeaders.append("Transfer-Encoding", "chunked");
+        myHeaders.append("Content-Type", "audio/mpeg");
+        myHeaders.append(
+          "Cookie",
+          "AWSALB=mCxIsXTgF5+Vuda3tYVhrGbvHA3OL9C645azRkPh89FOHpoJkZvF7si2xvnhYBe/TPkxFHO8lHvx37Df7sL99JSlwor6u4mYK4Z0xCKkrrZJk8NMK7TP0SdGwTx6; AWSALBCORS=mCxIsXTgF5+Vuda3tYVhrGbvHA3OL9C645azRkPh89FOHpoJkZvF7si2xvnhYBe/TPkxFHO8lHvx37Df7sL99JSlwor6u4mYK4Z0xCKkrrZJk8NMK7TP0SdGwTx6"
+        );
+
+        var file = "C:\Users\sudhir\Downloads\sample.mp3";
+        // var file = "https://bit.ly/3yxKEIY";
+
+        var requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: file,
+          redirect: "follow",
+        };
+
+        fetch("https://api.assemblyai.com/v2/upload", requestOptions)
+          .then((response) => response.text())
+          .then((result) => console.log(result))
+          .catch((error) => console.log("error", error));
+      }
+
+      console.log("beg");
+
+      let audioIN = { audio: true };
+      //  audio is true, for recording
+
+      // Access the permission for use
+      // the microphone
+      navigator.mediaDevices
+        .getUserMedia(audioIN)
+
+        // 'then()' method returns a Promise
+        .then(function (mediaStreamObj) {
+          // Connect the media stream to the
+          // first audio element
+          let audio = document.querySelector("audio");
+          //returns the recorded audio via 'audio' tag
+
+          // 'srcObject' is a property which
+          // takes the media object
+          // This is supported in the newer browsers
+          if ("srcObject" in audio) {
+            audio.srcObject = mediaStreamObj;
+          } else {
+            // Old version
+            audio.src = window.URL.createObjectURL(mediaStreamObj);
+          }
+
+          console.log("srcObject");
+
+          // It will play the audio
+          audio.onloadedmetadata = function (ev) {
+            // Play the audio in the 2nd audio
+            // element what is being recorded
+            audio.play();
+          };
+          // Start record
+          let start = document.getElementById("startRecording");
+
+          // Stop record
+          let stop = document.getElementById("stoptRecording");
+
+          // 2nd audio tag for play the audio
+          let playAudio = document.getElementById("audioPlay");
+
+          // This is the main thing to recorded
+          // the audio 'MediaRecorder' API
+          let mediaRecorder = new MediaRecorder(mediaStreamObj);
+          // Pass the audio stream
+
+          // Start event
+
+          start.addEventListener("click", function (ev) {
+            console.log("start");
+
+            mediaRecorder.start();
+          });
+
+          // Stop event
+          stop.addEventListener("click", function (ev) {
+            console.log("stop");
+
+            mediaRecorder.stop();
+          });
+
+          // Chunk array to store the audio data
+
+          let dataArray = [];
+
+          // If audio data available then push
+          // it to the chunk array
+          mediaRecorder.ondataavailable = function (ev) {
+            dataArray.push(ev.data);
+          };
+
+          // Convert the audio data in to blob
+          // after stopping the recording
+          mediaRecorder.onstop = function (ev) {
+            // blob of type mp3
+            let audioData = new Blob(dataArray, { type: "audio/mp3;" });
+
+            // After fill up the chunk
+            // array make it empty
+            dataArray = [];
+
+            // Creating audio url with reference
+            // of created blob named 'audioData'
+            let audioSrc = window.URL.createObjectURL(audioData);
+
+            // Pass the audio url to the 2nd video tag
+            playAudio.src = audioSrc;
+            console.log(audioData);
+          };
+        })
+
+        // If any error occurs then handles the error
+        .catch(function (err) {
+          console.log(err.name, err.message);
+        });
+    </script>
+  </body>
 </html>

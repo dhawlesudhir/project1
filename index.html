@@ -18,6 +18,7 @@
       <section>
         <nav>
           <main>Available Modules</main>
+          <hr>
           <ul>
             <li onclick="speechToText()">Speech to Text</li>
             <li onclick="texttoSpeech()">Text to Speech</li>
@@ -29,7 +30,8 @@
           </ul>
         </nav>
         <article>
-          <div id="contentDiv">Uses</div>
+          <!-- <div id="contentDiv">Uses</div> -->
+          <iframe id="pageFrame" frameborder="0" scrolling="no"></iframe>
         </article>
       </section>
       <footer>Footer
@@ -38,20 +40,32 @@
   </body>
   <script>
     function speechToText() {
-      $("#contentDiv").load("/assets/modules/speechToText.html #speechtotext");
+      // $("#contentDiv").load("/assets/modules/speechToText.html #speechtotext");
       // $("#contentDiv").load("a.html");
+      document.getElementById("pageFrame").src = "/assets/modules/speechToText.html";
+
     }
     function texttoSpeech() {
-      $("#contentDiv").load("/assets/modules/speechToText.html #texttospeech");
+      // $("#contentDiv").load("/assets/modules/speechToText.html #texttospeech");
+      document.getElementById("pageFrame").src = "/assets/modules/texttoSpeech.html";
+
     }
     function textExtract() {
-      $("#contentDiv").load("/assets/modules/TextExtractfromImage.html");
+      // $("#contentDiv").load("/assets/modules/TextExtractfromImage.html");
+      document.getElementById("pageFrame").src = "/assets/modules/TextExtractfromImage.html";
+
     }
     function objectRecognization() {
-      $("#contentDiv").load("/assets/modules/ObjectRecognization.html");
+      // $("#contentDiv").load("/assets/modules/ObjectRecognization.html");
+      document.getElementById("pageFrame").src = "/assets/modules/ObjectRecognization.html";
+
     }
     function imageClassification() {
-      $("#contentDiv").load("/assets/modules/ImageClassification.html");
+      // $("#contentDiv").load("/assets/modules/ImageClassification.html");
+      document.getElementById("pageFrame").src = "/assets/modules/ImageClassification.html";
+
     }
+    
+
   </script>
 </html>
